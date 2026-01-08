@@ -1,5 +1,7 @@
+using Dapper;
 using MediatR;
 using StargateAPI.Business.Data;
+using StargateAPI.Business.Dtos;
 using StargateAPI.Controllers;
 
 namespace StargateAPI.Business.Queries
@@ -20,8 +22,15 @@ namespace StargateAPI.Business.Queries
 
         public async Task<GetAstronautDetailByIdResult> Handle(GetAstronautDetailById request, CancellationToken cancellationToken)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            var result = new GetAstronautDetailByIdResult();
+
+            var query = $"SELECT * FROM [AstronautDetail] WHERE '{request.Id}' = Id";
+
+            var astronautDetail = await _context.Connection.QueryAsync<AstronautDetail>(query);
+
+            result.AstronautDetail = astronautDetail.FirstOrDefault();
+
+            return result;
         }
     }
 

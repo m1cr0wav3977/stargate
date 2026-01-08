@@ -27,8 +27,6 @@ The REST API is expected to do the following:
 4. Retrieve Astronaut Duty by name. [   ] GET /AstronautDuty{name} exists but uses GetPersonByName
 5. Add an Astronaut Duty.           [ x ] POST /AstronautDuty
 
-swagger doc?
-
 ##### Implement a user interface: (Encouraged)
 
 The UI is expected to do the following:
