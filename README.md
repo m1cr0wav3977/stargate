@@ -23,7 +23,7 @@ The REST API is expected to do the following:
 
 1. Retrieve a person by name.       [ x ]
 2. Retrieve all people.             [ x ]
-3. Add/update a person by name.     [   ] only add working
+3. Add/update a person by name.     [   ] adding a person only adds the name
 4. Retrieve Astronaut Duty by name. [   ] GET /AstronautDuty{name} exists but uses GetPersonByName
 5. Add an Astronaut Duty.           [ x ] POST /AstronautDuty
 

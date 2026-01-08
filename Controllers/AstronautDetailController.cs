@@ -8,10 +8,10 @@ namespace StargateAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AstronautDutyController : ControllerBase
+    public class AstronautDetailController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public AstronautDutyController(IMediator mediator)
+        public AstronautDetailController(IMediator mediator)
         {
             _mediator = mediator;
         }
@@ -19,7 +19,7 @@ namespace StargateAPI.Controllers
         // Create
 
         [HttpPost("")]
-        public async Task<IActionResult> CreateAstronautDuty([FromBody] CreateAstronautDuty request)
+        public async Task<IActionResult> CreateAstronautDetail([FromBody] CreateAstronautDetail request)
         {
             try
             {
@@ -47,15 +47,14 @@ namespace StargateAPI.Controllers
         }
 
         // Read
-
-        [HttpGet("name/{name}")]
-        public async Task<IActionResult> GetAstronautDutiesByName(string name)
+        [HttpGet("person/{personId:int}")]
+        public async Task<IActionResult> GetAstronautDetailByPersonId(int personId)
         {
             try
             {
-                var result = await _mediator.Send(new GetAstronautDutiesByName()
+                var result = await _mediator.Send(new GetAstronautDetailByPersonId()
                 {
-                    Name = name
+                    PersonId = personId
                 });
 
                 return this.GetResponse(result);
@@ -81,11 +80,11 @@ namespace StargateAPI.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetAstronautDutyById(int id)
+        public async Task<IActionResult> GetAstronautDetailById(int id)
         {
             try
             {
-                var result = await _mediator.Send(new GetAstronautDutyById()
+                var result = await _mediator.Send(new GetAstronautDetailById()
                 {
                     Id = id
                 });
@@ -115,7 +114,7 @@ namespace StargateAPI.Controllers
         // Update
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateAstronautDuty(int id, [FromBody] UpdateAstronautDuty request)
+        public async Task<IActionResult> UpdateAstronautDetail(int id, [FromBody] UpdateAstronautDetail request)
         {
             try
             {
@@ -147,11 +146,11 @@ namespace StargateAPI.Controllers
         // Delete
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteAstronautDuty(int id)
+        public async Task<IActionResult> DeleteAstronautDetail(int id)
         {
             try
             {
-                var result = await _mediator.Send(new DeleteAstronautDuty()
+                var result = await _mediator.Send(new DeleteAstronautDetail()
                 {
                     Id = id
                 });
