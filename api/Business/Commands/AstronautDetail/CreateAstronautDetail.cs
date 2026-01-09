@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using StargateAPI.Business.Data;
 using StargateAPI.Controllers;
 using System.Net;
+
 namespace StargateAPI.Business.Commands
 {
     public class CreateAstronautDetail : IRequest<CreateAstronautDetailResult>
