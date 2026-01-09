@@ -14,6 +14,7 @@ namespace StargateAPI.Business.Commands
     public class CreatePersonPreProcessor : IRequestPreProcessor<CreatePerson>
     {
         private readonly StargateContext _context;
+        
         public CreatePersonPreProcessor(StargateContext context)
         {
             _context = context;

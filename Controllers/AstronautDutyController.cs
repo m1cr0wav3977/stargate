@@ -11,9 +11,12 @@ namespace StargateAPI.Controllers
     public class AstronautDutyController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public AstronautDutyController(IMediator mediator)
+        private readonly ILogger<AstronautDutyController> _logger;
+        
+        public AstronautDutyController(IMediator mediator, ILogger<AstronautDutyController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         // Create
@@ -21,9 +24,14 @@ namespace StargateAPI.Controllers
         [HttpPost("")]
         public async Task<IActionResult> CreateAstronautDuty([FromBody] CreateAstronautDuty request)
         {
+            var requestMethod = HttpContext.Request.Method;
+            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+            var endpoint = HttpContext.Request.Path;
+            _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
             try
             {
                 var result = await _mediator.Send(request);
+                _logger.LogInformation("CreateAstronautDuty result: {Result}", result);
                 return this.GetResponse(result);
             }
             catch (NotImplementedException)
@@ -51,6 +59,10 @@ namespace StargateAPI.Controllers
         [HttpGet("name/{name}")]
         public async Task<IActionResult> GetAstronautDutiesByName(string name)
         {
+            var requestMethod = HttpContext.Request.Method;
+            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+            var endpoint = HttpContext.Request.Path;
+            _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
             try
             {
                 var result = await _mediator.Send(new GetAstronautDutiesByName()
@@ -58,6 +70,7 @@ namespace StargateAPI.Controllers
                     Name = name
                 });
 
+                _logger.LogInformation("GetAstronautDutiesByName result: {Result}", result);
                 return this.GetResponse(result);
             }
             catch (NotImplementedException)
@@ -83,6 +96,10 @@ namespace StargateAPI.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAstronautDutyById(int id)
         {
+            var requestMethod = HttpContext.Request.Method;
+            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+            var endpoint = HttpContext.Request.Path;
+            _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
             try
             {
                 var result = await _mediator.Send(new GetAstronautDutyById()
@@ -90,6 +107,7 @@ namespace StargateAPI.Controllers
                     Id = id
                 });
 
+                _logger.LogInformation("GetAstronautDutyById result: {Result}", result);
                 return this.GetResponse(result);
             }
             catch (NotImplementedException)
@@ -117,11 +135,16 @@ namespace StargateAPI.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> UpdateAstronautDuty(int id, [FromBody] UpdateAstronautDuty request)
         {
+            var requestMethod = HttpContext.Request.Method;
+            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+            var endpoint = HttpContext.Request.Path;
+            _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
             try
             {
                 request.Id = id;
                 var result = await _mediator.Send(request);
 
+                _logger.LogInformation("UpdateAstronautDuty result: {Result}", result);
                 return this.GetResponse(result);
             }
             catch (NotImplementedException)
@@ -149,6 +172,10 @@ namespace StargateAPI.Controllers
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAstronautDuty(int id)
         {
+            var requestMethod = HttpContext.Request.Method;
+            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+            var endpoint = HttpContext.Request.Path;
+            _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
             try
             {
                 var result = await _mediator.Send(new DeleteAstronautDuty()
@@ -156,6 +183,7 @@ namespace StargateAPI.Controllers
                     Id = id
                 });
 
+                _logger.LogInformation("DeleteAstronautDuty result: {Result}", result);
                 return this.GetResponse(result);
             }
             catch (NotImplementedException)

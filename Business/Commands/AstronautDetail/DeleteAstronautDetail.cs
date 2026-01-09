@@ -1,3 +1,4 @@
+using Dapper;
 using MediatR;
 using StargateAPI.Business.Data;
 using StargateAPI.Controllers;
@@ -20,14 +21,24 @@ namespace StargateAPI.Business.Commands
 
         public async Task<DeleteAstronautDetailResult> Handle(DeleteAstronautDetail request, CancellationToken cancellationToken)
         {
-            // TODO: Implement
-            throw new NotImplementedException();
+            var query = $"SELECT * FROM [AstronautDetail] WHERE \'{request.Id}\' = Id";
+
+            var astronautDetail = await _context.Connection.QueryFirstOrDefaultAsync<AstronautDetail>(query);
+
+            if (astronautDetail is null) throw new BadHttpRequestException("Bad Request");
+
+            await _context.Connection.ExecuteAsync($"DELETE FROM [AstronautDetail] WHERE \'{request.Id}\' = Id");
+
+            await _context.SaveChangesAsync();
+
+            return new DeleteAstronautDetailResult() { Id = request.Id };
+
+
         }
     }
 
     public class DeleteAstronautDetailResult : BaseResponse
     {
-        // TODO: Add result properties if needed
+        public int Id { get; set; }
     }
 }
-
