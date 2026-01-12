@@ -1,0 +1,36 @@
+<div class="people-container">
+  <h2>People</h2>
+
+  <div class="add-person-section">
+    <input 
+      type="text" 
+      [(ngModel)]="newPersonName" 
+      placeholder="Enter person name"
+      (keyup.enter)="addPerson()"
+      class="name-input">
+    <button (click)="addPerson()" [disabled]="loading" class="btn btn-primary">
+      Add Person
+    </button>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <div class="people-list">
+    <div *ngFor="let person of people" class="person-card">
+      <div class="person-info">
+        <span class="person-name">{{ person.name }}</span>
+        <span *ngIf="isAstronaut(person)" class="astronaut-badge">Astronaut</span>
+      </div>
+      <button 
+        (click)="deletePerson(person)" 
+        [disabled]="loading"
+        class="btn btn-danger btn-small">
+        Delete
+      </button>
+    </div>
+    <div *ngIf="people.length === 0 && !loading" class="empty-state">
+      No people found. Add a person to get started.
+    </div>
+  </div>
+</div>

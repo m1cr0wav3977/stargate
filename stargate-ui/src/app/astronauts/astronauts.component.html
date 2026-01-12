@@ -1,0 +1,110 @@
+<div class="astronauts-container">
+  <div class="header-section">
+    <h2>Astronauts</h2>
+    <button (click)="openAddAstronautModal()" [disabled]="loading || nonAstronauts.length === 0" class="btn btn-primary">
+      Add Astronaut
+    </button>
+  </div>
+
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+  <div *ngIf="loading" class="loading">Loading...</div>
+
+  <div *ngIf="nonAstronauts.length === 0 && !loading" class="info-message">
+    All people are already astronauts.
+  </div>
+
+  <div class="astronauts-list">
+    <div *ngFor="let astronaut of astronauts" class="astronaut-card">
+      <div class="astronaut-header">
+        <div class="astronaut-info">
+          <h3>{{ astronaut.person.name }}</h3>
+          <div class="astronaut-details">
+            <span>Rank: {{ astronaut.person.currentRank }}</span>
+            <span>Title: {{ astronaut.person.currentDutyTitle }}</span>
+            <span *ngIf="astronaut.person.careerStartDate">
+              Career Start: {{ astronaut.person.careerStartDate | date:'shortDate' }}
+            </span>
+            <span *ngIf="astronaut.person.careerEndDate" class="retired">
+              Retired: {{ astronaut.person.careerEndDate | date:'shortDate' }}
+            </span>
+          </div>
+        </div>
+        <button 
+          (click)="openAddDutyModal(astronaut)" 
+          [disabled]="loading"
+          class="btn btn-primary btn-small">
+          Add Duty
+        </button>
+      </div>
+
+      <div class="duties-section">
+        <h4>Duty History</h4>
+        <div *ngIf="astronaut.duties.length === 0" class="no-duties">No duties recorded</div>
+        <div *ngFor="let duty of astronaut.duties" class="duty-item">
+          <div class="duty-info">
+            <strong>{{ duty.dutyTitle }}</strong>
+            <span>Rank: {{ duty.rank }}</span>
+            <span>Start: {{ duty.dutyStartDate | date:'shortDate' }}</span>
+            <span *ngIf="duty.dutyEndDate">End: {{ duty.dutyEndDate | date:'shortDate' }}</span>
+            <span *ngIf="!duty.dutyEndDate" class="current-duty">Current</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="astronauts.length === 0 && !loading" class="empty-state">
+      No astronauts found. Add an astronaut to get started.
+    </div>
+  </div>
+</div>
+
+<!-- Add Astronaut Modal -->
+<div *ngIf="showAddAstronautModal" class="modal-overlay" (click)="closeAddAstronautModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Add Astronaut</h3>
+    <p>Select a person to enroll in the astronaut program (will assign Spaceman duty):</p>
+    <select [(ngModel)]="selectedPersonId" class="select-input">
+      <option [value]="null">Select a person...</option>
+      <option *ngFor="let person of nonAstronauts" [value]="person.personId">
+        {{ person.name }}
+      </option>
+    </select>
+    <div class="modal-actions">
+      <button (click)="closeAddAstronautModal()" class="btn btn-secondary">Cancel</button>
+      <button (click)="addAstronaut()" [disabled]="!selectedPersonId || loading" class="btn btn-primary">
+        Add Astronaut
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Duty Modal -->
+<div *ngIf="showAddDutyModal && selectedAstronaut" class="modal-overlay" (click)="closeAddDutyModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <h3>Add Duty for {{ selectedAstronaut.person.name }}</h3>
+    <div class="form-group">
+      <label>
+        <input type="checkbox" [(ngModel)]="isRetired" (change)="onRetiredChange()">
+        Retire
+      </label>
+    </div>
+    <div class="form-group">
+      <label>Rank:</label>
+      <input type="text" [(ngModel)]="dutyRank" placeholder="e.g., CAPT" [disabled]="isRetired" class="form-input">
+    </div>
+    <div class="form-group">
+      <label>Duty Title:</label>
+      <input type="text" [(ngModel)]="dutyTitle" placeholder="e.g., Commander" [disabled]="isRetired" class="form-input">
+    </div>
+    <div class="form-group">
+      <label>Start Date:</label>
+      <input type="date" [(ngModel)]="dutyStartDate" class="form-input">
+    </div>
+    <div class="modal-actions">
+      <button (click)="closeAddDutyModal()" class="btn btn-secondary">Cancel</button>
+      <button (click)="addDuty()" [disabled]="loading" class="btn btn-primary">
+        Add Duty
+      </button>
+    </div>
+  </div>
+</div>

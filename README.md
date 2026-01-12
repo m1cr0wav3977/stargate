@@ -119,8 +119,6 @@ Add Unit Tests, most critical:
 
 write a build script that runs all unit tests then calls the docker compose 
 
-add an nginx container to the docker compose
-
 ## API Endpoints
 
 ### Person Endpoints
