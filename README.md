@@ -9,6 +9,33 @@ ACTS is used as a tool to maintain a record of all the People that have served a
 
 The People that exist in this system are not all Astronauts. ACTS maintains a master list of People and Duties that are updated from an external service (not controlled by ACTS). The update schedule is determined by the external service.
 
+## How to Run
+
+```
+git pull https://github.com/m1cr0wav3977/stargate.git
+```
+```
+docker compose up
+```
+
+A lightweight web ui will be available at http://localhost
+
+The api port is bound to the host and routed for testing convenience and all API routes are available at http://localhost/api/\<route\> or http://localhost:5204/\<route\>
+
+## Run Unit Tests
+
+Unit tests for the API are available at stargate-api/StargateAPI.Tests
+
+cd into the folder then run with
+```
+dotnet test
+```
+## Other Tests
+
+Under stargate-api there are also 2 AI-created bash scripts for quickly checking SQL injection security and business logic:
+- quick-integration-test.sh
+- sql-injection-test.sh
+
 ## Definitions
 
 1. A person's astronaut assignment is the Astronaut Duty.
