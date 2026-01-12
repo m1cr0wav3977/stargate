@@ -1,5 +1,5 @@
-using Dapper;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using StargateAPI.Business.Data;
 using StargateAPI.Controllers;
 
@@ -21,24 +21,33 @@ namespace StargateAPI.Business.Commands
 
         public async Task<DeletePersonResult> Handle(DeletePerson request, CancellationToken cancellationToken)
         {
-            var query = $"SELECT * FROM [Person] WHERE \'{request.Id}\' = Id";
-
-            var person = await _context.Connection.QueryFirstOrDefaultAsync<Person>(query);
+            // Load person with related entities for cascade delete
+            var person = await _context.People
+                .Include(p => p.AstronautDetail)
+                .Include(p => p.AstronautDuties)
+                .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
             if (person is null) throw new BadHttpRequestException("Bad Request");
 
-            await _context.Connection.ExecuteAsync($"DELETE FROM [Person] WHERE \'{request.Id}\' = Id");
+            // EF Core will handle cascade delete if configured, otherwise remove related entities explicitly
+            if (person.AstronautDetail != null)
+            {
+                _context.AstronautDetails.Remove(person.AstronautDetail);
+            }
 
-            await _context.Connection.ExecuteAsync($"DELETE FROM [AstronautDetail] WHERE \'{request.Id}\' = PersonId");
+            if (person.AstronautDuties.Any())
+            {
+                _context.AstronautDuties.RemoveRange(person.AstronautDuties);
+            }
 
-            await _context.Connection.ExecuteAsync($"DELETE FROM [AstronautDuty] WHERE \'{request.Id}\' = PersonId");
+            // Remove the person (cascade delete should handle related entities if configured)
+            _context.People.Remove(person);
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
             return new DeletePersonResult() { Id = request.Id };
         }
 
-        
     }
 
     public class DeletePersonResult : BaseResponse

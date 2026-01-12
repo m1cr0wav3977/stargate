@@ -93,7 +93,7 @@ Backend
 - adding a duty of spaceman by name creates an astronautdetail (enrolling them in astronaut program) and set their start date
 - adding a new duty will update relevant details in the astronautdetail, handle dates in the astronautduty
 - adding a duty of "retired" will add a career end date 1 day before the retired duty start date
-- deleting a person will cascade to include deleting astronautdetails or astronaut duties if they apply (TODO)
+- deleting a person will cascade to include deleting astronautdetails or astronaut duties if they apply
 
 Frontend
 - 2 page app with title bar
@@ -106,7 +106,9 @@ Frontend
    - add duty menu allows you to enter duty information or select retire
 
 Logging
-- log to stdout successes and exceptions
+- log to stdout successes and exceptions 
+   - I chose this design change purely based on preference
+   - to implement logging to the database, I would implement a new entity and attach it to the Stargate context
 
 Defensive coding
 - SQL injection protection in preprocessors?
@@ -118,3 +120,38 @@ Add Unit Tests, most critical:
 write a build script that runs all unit tests then calls the docker compose 
 
 add an nginx container to the docker compose
+
+## API Endpoints
+
+### Person Endpoints
+
+| Method | Path | Command/Query | Description |
+|--------|------|---------------|-------------|
+| `POST` | `/Person` | `CreatePerson` | Create a new person. Validates that name is unique. |
+| `GET` | `/Person` | `GetPeople` | Retrieve all people. |
+| `GET` | `/Person/name/{name}` | `GetPersonByName` | Retrieve a person by name (includes AstronautDetail if available). |
+| `GET` | `/Person/{id}` | `GetPersonById` | Retrieve a person by ID. |
+| `PUT` | `/Person/{id}` | `UpdatePerson` | Update a person by ID. |
+| `DELETE` | `/Person/{id}` | `DeletePerson` | Delete a person by ID (cascades to AstronautDetail and AstronautDuties). |
+
+### AstronautDetail Endpoints
+
+| Method | Path | Command/Query | Description |
+|--------|------|---------------|-------------|
+| `GET` | `/AstronautDetail/person/{personId}` | `GetAstronautDetailByPersonId` | Retrieve astronaut detail by person ID. |
+| `GET` | `/AstronautDetail/{id}` | `GetAstronautDetailById` | Retrieve astronaut detail by ID. |
+| ~~`POST`~~ | ~~`/AstronautDetail`~~ | ~~`CreateAstronautDetail`~~ | ~~Disabled - AstronautDetail is created automatically when first duty is added.~~ |
+| ~~`PUT`~~ | ~~`/AstronautDetail/{id}`~~ | ~~`UpdateAstronautDetail`~~ | ~~Disabled - AstronautDetail is updated automatically when duties are added.~~ |
+| ~~`DELETE`~~ | ~~`/AstronautDetail/{id}`~~ | ~~`DeleteAstronautDetail`~~ | ~~Disabled - AstronautDetail is deleted via cascade when person is deleted.~~ |
+
+### AstronautDuty Endpoints
+
+| Method | Path | Command/Query | Description |
+|--------|------|---------------|-------------|
+| `POST` | `/AstronautDuty` | `AddAstronautDuty` | Add a new astronaut duty. First duty must be "Spaceman". Automatically creates/updates AstronautDetail. |
+| `GET` | `/AstronautDuty/name/{name}` | `GetAstronautDutiesByName` | Retrieve all astronaut duties for a person by name. |
+| `GET` | `/AstronautDuty/{id}` | `GetAstronautDutyById` | Retrieve an astronaut duty by ID. |
+| ~~`PUT`~~ | ~~`/AstronautDuty/{id}`~~ | ~~`UpdateAstronautDuty`~~ | ~~Disabled.~~ |
+| ~~`DELETE`~~ | ~~`/AstronautDuty/{id}`~~ | ~~`DeleteAstronautDuty`~~ | ~~Disabled - AstronautDuties are deleted via cascade when person is deleted.~~ |
+
+**Note:** Endpoints marked with ~~strikethrough~~ are commented out in the controllers and not available.

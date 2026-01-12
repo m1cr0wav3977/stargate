@@ -23,7 +23,7 @@ namespace StargateAPI.Business.Queries
         {
             var result = new GetPeopleResult();
 
-            var query = $"SELECT * FROM [Person]";
+            var query = "SELECT * FROM [Person]";
 
             var people = await _context.Connection.QueryAsync<PersonAstronaut>(query);
 

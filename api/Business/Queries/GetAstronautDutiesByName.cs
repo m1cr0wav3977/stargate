@@ -25,15 +25,21 @@ namespace StargateAPI.Business.Queries
 
             var result = new GetAstronautDutiesByNameResult();
 
-            var query = $"SELECT * FROM [Person] WHERE \'{request.Name}\' = Name";
+            var query = "SELECT * FROM [Person] WHERE @Name = Name";
 
-            var person = await _context.Connection.QueryFirstOrDefaultAsync<Person>(query);
+            var person = await _context.Connection.QueryFirstOrDefaultAsync<Person>(
+                query,
+                new { Name = request.Name }
+            );
 
             if (person is null) throw new BadHttpRequestException("Bad Request");
 
-            var query2 = $"SELECT * FROM [AstronautDuty] WHERE \'{person.Id}\' = PersonId";
+            var query2 = "SELECT * FROM [AstronautDuty] WHERE @PersonId = PersonId";
 
-            var astronautDuties = await _context.Connection.QueryAsync<AstronautDuty>(query2);
+            var astronautDuties = await _context.Connection.QueryAsync<AstronautDuty>(
+                query2,
+                new { PersonId = person.Id }
+            );
 
             result.AstronautDuties = astronautDuties.ToList();
 

@@ -24,9 +24,12 @@ namespace StargateAPI.Business.Queries
         {
             var result = new GetAstronautDutyByIdResult();
 
-            var query = $"SELECT * FROM [AstronautDuty] WHERE '{request.Id}' = Id";
+            var query = "SELECT * FROM [AstronautDuty] WHERE @Id = Id";
 
-            var astronautDuty = await _context.Connection.QueryAsync<AstronautDuty>(query);
+            var astronautDuty = await _context.Connection.QueryAsync<AstronautDuty>(
+                query,
+                new { Id = request.Id }
+            );
 
             result.AstronautDuty = astronautDuty.FirstOrDefault();
 

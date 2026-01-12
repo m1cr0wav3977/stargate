@@ -171,6 +171,86 @@ response=$(curl -s -X "GET" "$BASE_URL/AstronautDetail/person/$TEST_PERSON_ID" -
 echo "$response" | python3 -m json.tool 2>/dev/null || echo "$response"
 echo ""
 
+# ============================================
+# DELETE PHASE - Test Cascade Delete
+# ============================================
+echo "🗑️  DELETE PHASE - Testing Cascade Delete"
+echo "==========================================="
+echo ""
+
+# Delete Person
+echo "5. Deleting Person (should cascade delete AstronautDetail and AstronautDuties)..."
+test_endpoint "DELETE" "$BASE_URL/Person/$TEST_PERSON_ID" "DeletePerson - Delete person by ID"
+
+# Verify cascade delete - try to retrieve deleted entities
+echo ""
+echo "📋 Verification: Attempting to retrieve deleted entities..."
+echo "=========================================================="
+echo ""
+
+echo "Person (should be deleted/not found):"
+echo "--------------------------------------"
+response=$(curl -s -w "\n%{http_code}" -X "GET" "$BASE_URL/Person/$TEST_PERSON_ID" -H "Content-Type: application/json")
+http_code=$(echo "$response" | tail -n1)
+body=$(echo "$response" | sed '$d')
+if [ "$http_code" -eq 200 ]; then
+    # Check if the person actually exists in the response
+    person_exists=$(echo "$body" | python3 -c "import sys, json; data = json.load(sys.stdin); person = data.get('person', data.get('Person')); print('exists' if person and person.get('id') else 'none')" 2>/dev/null || echo "exists")
+    if [ "$person_exists" = "none" ]; then
+        echo -e "${GREEN}✓ Person not found (deleted successfully)${NC} (HTTP $http_code)"
+        echo "$body" | python3 -m json.tool 2>/dev/null || echo "$body"
+    else
+        echo -e "${RED}✗ Person still exists!${NC} (HTTP $http_code)"
+        echo "$body" | python3 -m json.tool 2>/dev/null || echo "$body"
+    fi
+else
+    echo -e "${GREEN}✓ Person not found (deleted successfully)${NC} (HTTP $http_code)"
+    echo "Response: $body"
+fi
+echo ""
+
+echo "Astronaut Duties (should be empty/not found):"
+echo "----------------------------------------------"
+response=$(curl -s -w "\n%{http_code}" -X "GET" "$BASE_URL/AstronautDuty/name/$(echo $TEST_PERSON_NAME | sed 's/ /%20/g')" -H "Content-Type: application/json")
+http_code=$(echo "$response" | tail -n1)
+body=$(echo "$response" | sed '$d')
+if [ "$http_code" -eq 200 ]; then
+    # Check if the response is an empty array or has no data
+    duty_count=$(echo "$body" | python3 -c "import sys, json; data = json.load(sys.stdin); items = data.get('data', data.get('Data', [])); print(len(items) if isinstance(items, list) else 0)" 2>/dev/null || echo "1")
+    if [ "$duty_count" -eq 0 ]; then
+        echo -e "${GREEN}✓ No duties found (cascade delete worked)${NC} (HTTP $http_code)"
+        echo "$body" | python3 -m json.tool 2>/dev/null || echo "$body"
+    else
+        echo -e "${RED}✗ Duties still exist!${NC} (HTTP $http_code)"
+        echo "$body" | python3 -m json.tool 2>/dev/null || echo "$body"
+    fi
+else
+    echo -e "${GREEN}✓ Duties not found (cascade delete worked)${NC} (HTTP $http_code)"
+    echo "Response: $body"
+fi
+echo ""
+
+echo "Astronaut Detail (should be deleted/not found):"
+echo "-----------------------------------------------"
+response=$(curl -s -w "\n%{http_code}" -X "GET" "$BASE_URL/AstronautDetail/person/$TEST_PERSON_ID" -H "Content-Type: application/json")
+http_code=$(echo "$response" | tail -n1)
+body=$(echo "$response" | sed '$d')
+if [ "$http_code" -eq 200 ]; then
+    # Check if response indicates no data
+    detail_exists=$(echo "$body" | python3 -c "import sys, json; data = json.load(sys.stdin); detail = data.get('astronautDetail', data.get('AstronautDetail')); print('exists' if detail and detail.get('id') else 'none')" 2>/dev/null || echo "exists")
+    if [ "$detail_exists" = "none" ]; then
+        echo -e "${GREEN}✓ AstronautDetail not found (cascade delete worked)${NC} (HTTP $http_code)"
+        echo "$body" | python3 -m json.tool 2>/dev/null || echo "$body"
+    else
+        echo -e "${RED}✗ AstronautDetail still exists!${NC} (HTTP $http_code)"
+        echo "$body" | python3 -m json.tool 2>/dev/null || echo "$body"
+    fi
+else
+    echo -e "${GREEN}✓ AstronautDetail not found (cascade delete worked)${NC} (HTTP $http_code)"
+    echo "Response: $body"
+fi
+echo ""
+
 # Summary
 echo "========================================"
 echo "📊 Test Summary"
