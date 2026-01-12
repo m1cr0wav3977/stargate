@@ -24,7 +24,7 @@ namespace StargateAPI.Business.Queries
         {
             var result = new GetPersonByIdResult();
 
-            var query = "SELECT * FROM [Person] WHERE @Id = Id";
+            var query = "SELECT Id as PersonId, Name FROM [Person] WHERE @Id = Id";
 
             var person = await _context.Connection.QueryAsync<PersonAstronaut>(
                 query,
