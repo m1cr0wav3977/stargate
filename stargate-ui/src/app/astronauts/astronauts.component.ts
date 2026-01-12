@@ -67,9 +67,10 @@ export class AstronautsComponent implements OnInit {
         astronauts.forEach((person: Person) => {
           this.apiService.getAstronautDutiesByName(person.name).subscribe({
             next: (dutyResponse) => {
+              const duties = (dutyResponse as any).astronautDuties || dutyResponse.data || [];
               this.astronauts.push({
                 person,
-                duties: dutyResponse.data || []
+                duties: duties
               });
               loadedCount++;
               if (loadedCount === astronauts.length) {
@@ -114,7 +115,12 @@ export class AstronautsComponent implements OnInit {
       return;
     }
 
-    const selectedPerson = this.nonAstronauts.find(p => p.personId === this.selectedPersonId!);
+    // Convert to number since HTML select returns string
+    const personId = typeof this.selectedPersonId === 'string' 
+      ? parseInt(this.selectedPersonId, 10) 
+      : this.selectedPersonId;
+    
+    const selectedPerson = this.nonAstronauts.find(p => p.personId === personId);
     if (!selectedPerson) {
       this.error = 'Selected person not found';
       return;
@@ -126,8 +132,8 @@ export class AstronautsComponent implements OnInit {
     
     this.apiService.addAstronautDuty(
       selectedPerson.name,
-      this.selectedPersonId!,
-      'CPT',
+      personId,
+      '2LT',
       'Spaceman',
       today
     ).subscribe({
@@ -169,7 +175,7 @@ export class AstronautsComponent implements OnInit {
   onRetiredChange(): void {
     if (this.isRetired) {
       this.dutyTitle = 'RETIRED';
-      this.dutyRank = this.selectedAstronaut?.person.currentRank || 'CAPT';
+      this.dutyRank = this.selectedAstronaut?.person.currentRank || 'RETIRED';
     } else {
       this.dutyTitle = '';
     }

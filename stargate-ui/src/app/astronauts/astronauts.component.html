@@ -64,8 +64,8 @@
     <h3>Add Astronaut</h3>
     <p>Select a person to enroll in the astronaut program (will assign Spaceman duty):</p>
     <select [(ngModel)]="selectedPersonId" class="select-input">
-      <option [value]="null">Select a person...</option>
-      <option *ngFor="let person of nonAstronauts" [value]="person.personId">
+      <option [ngValue]="null">Select a person...</option>
+      <option *ngFor="let person of nonAstronauts" [ngValue]="person.personId">
         {{ person.name }}
       </option>
     </select>

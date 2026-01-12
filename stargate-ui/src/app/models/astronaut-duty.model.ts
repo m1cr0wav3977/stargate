@@ -11,6 +11,7 @@ export interface AstronautDutyResponse {
   success: boolean;
   message?: string;
   data?: AstronautDuty[];
+  astronautDuties?: AstronautDuty[];  // API returns this property
   astronautDuty?: AstronautDuty;
   id?: number;
 }
