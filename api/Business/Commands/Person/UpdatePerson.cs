@@ -18,8 +18,6 @@ namespace StargateAPI.Business.Commands
         public string? CurrentDutyTitle { get; set; }
         public DateTime? CareerStartDate { get; set; }
         public DateTime? CareerEndDate { get; set; }
-
-        // Optional AstronautDuty properties (updates most recent duty)
         public string? Rank { get; set; }
         public string? DutyTitle { get; set; }
         public DateTime? DutyStartDate { get; set; }

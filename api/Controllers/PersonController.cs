@@ -187,7 +187,7 @@ namespace StargateAPI.Controllers
             _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
             try
             {
-                request.PersonId = id;
+                request.Id = id;
                 var result = await _mediator.Send(request);
 
                 _logger.LogInformation("UpdatePerson result: {Result}", result);

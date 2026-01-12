@@ -21,38 +21,38 @@ namespace StargateAPI.Controllers
 
         // Create
 
-        [HttpPost("")]
-        public async Task<IActionResult> CreateAstronautDetail([FromBody] CreateAstronautDetail request)
-        {
-            var requestMethod = HttpContext.Request.Method;
-            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
-            var endpoint = HttpContext.Request.Path;
-            _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
-            try
-            {
-                var result = await _mediator.Send(request);
-                _logger.LogInformation("CreateAstronautDetail result: {Result}", result);
-                return this.GetResponse(result);
-            }
-            catch (NotImplementedException)
-            {
-                return this.GetResponse(new BaseResponse()
-                {
-                    Message = "Not implemented",
-                    Success = false,
-                    ResponseCode = 202
-                });
-            }
-            catch (Exception ex)
-            {
-                return this.GetResponse(new BaseResponse()
-                {
-                    Message = ex.Message,
-                    Success = false,
-                    ResponseCode = (int)HttpStatusCode.InternalServerError
-                });
-            }
-        }
+        // [HttpPost("")]
+        // public async Task<IActionResult> CreateAstronautDetail([FromBody] CreateAstronautDetail request)
+        // {
+        //     var requestMethod = HttpContext.Request.Method;
+        //     var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+        //     var endpoint = HttpContext.Request.Path;
+        //     _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
+        //     try
+        //     {
+        //         var result = await _mediator.Send(request);
+        //         _logger.LogInformation("CreateAstronautDetail result: {Result}", result);
+        //         return this.GetResponse(result);
+        //     }
+        //     catch (NotImplementedException)
+        //     {
+        //         return this.GetResponse(new BaseResponse()
+        //         {
+        //             Message = "Not implemented",
+        //             Success = false,
+        //             ResponseCode = 202
+        //         });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return this.GetResponse(new BaseResponse()
+        //         {
+        //             Message = ex.Message,
+        //             Success = false,
+        //             ResponseCode = (int)HttpStatusCode.InternalServerError
+        //         });
+        //     }
+        // }
 
         // Read
         [HttpGet("person/{personId:int}")]
@@ -131,78 +131,78 @@ namespace StargateAPI.Controllers
 
         // Update
 
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> UpdateAstronautDetail(int id, [FromBody] UpdateAstronautDetail request)
-        {
-            var requestMethod = HttpContext.Request.Method;
-            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
-            var endpoint = HttpContext.Request.Path;
-            _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
-            try
-            {
-                request.Id = id;
-                var result = await _mediator.Send(request);
+        // [HttpPut("{id:int}")]
+        // public async Task<IActionResult> UpdateAstronautDetail(int id, [FromBody] UpdateAstronautDetail request)
+        // {
+        //     var requestMethod = HttpContext.Request.Method;
+        //     var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+        //     var endpoint = HttpContext.Request.Path;
+        //     _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
+        //     try
+        //     {
+        //         request.Id = id;
+        //         var result = await _mediator.Send(request);
 
-                _logger.LogInformation("UpdateAstronautDetail result: {Result}", result);
-                return this.GetResponse(result);
-            }
-            catch (NotImplementedException)
-            {
-                return this.GetResponse(new BaseResponse()
-                {
-                    Message = "Not implemented",
-                    Success = false,
-                    ResponseCode = 202
-                });
-            }
-            catch (Exception ex)
-            {
-                return this.GetResponse(new BaseResponse()
-                {
-                    Message = ex.Message,
-                    Success = false,
-                    ResponseCode = (int)HttpStatusCode.InternalServerError
-                });
-            }
-        }
+        //         _logger.LogInformation("UpdateAstronautDetail result: {Result}", result);
+        //         return this.GetResponse(result);
+        //     }
+        //     catch (NotImplementedException)
+        //     {
+        //         return this.GetResponse(new BaseResponse()
+        //         {
+        //             Message = "Not implemented",
+        //             Success = false,
+        //             ResponseCode = 202
+        //         });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return this.GetResponse(new BaseResponse()
+        //         {
+        //             Message = ex.Message,
+        //             Success = false,
+        //             ResponseCode = (int)HttpStatusCode.InternalServerError
+        //         });
+        //     }
+        // }
 
         // Delete
 
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteAstronautDetail(int id)
-        {
-            var requestMethod = HttpContext.Request.Method;
-            var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
-            var endpoint = HttpContext.Request.Path;
-            _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
-            try
-            {
-                var result = await _mediator.Send(new DeleteAstronautDetail()
-                {
-                    Id = id
-                });
+        // [HttpDelete("{id:int}")]
+        // public async Task<IActionResult> DeleteAstronautDetail(int id)
+        // {
+        //     var requestMethod = HttpContext.Request.Method;
+        //     var requestIp = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
+        //     var endpoint = HttpContext.Request.Path;
+        //     _logger.LogInformation("Request: {Method} | IP: {Ip} | Endpoint: {Endpoint}", requestMethod, requestIp, endpoint);
+        //     try
+        //     {
+        //         var result = await _mediator.Send(new DeleteAstronautDetail()
+        //         {
+        //             Id = id
+        //         });
 
-                _logger.LogInformation("DeleteAstronautDetail result: {Result}", result);
-                return this.GetResponse(result);
-            }
-            catch (NotImplementedException)
-            {
-                return this.GetResponse(new BaseResponse()
-                {
-                    Message = "Not implemented",
-                    Success = false,
-                    ResponseCode = 202
-                });
-            }
-            catch (Exception ex)
-            {
-                return this.GetResponse(new BaseResponse()
-                {
-                    Message = ex.Message,
-                    Success = false,
-                    ResponseCode = (int)HttpStatusCode.InternalServerError
-                });
-            }
-        }
+        //         _logger.LogInformation("DeleteAstronautDetail result: {Result}", result);
+        //         return this.GetResponse(result);
+        //     }
+        //     catch (NotImplementedException)
+        //     {
+        //         return this.GetResponse(new BaseResponse()
+        //         {
+        //             Message = "Not implemented",
+        //             Success = false,
+        //             ResponseCode = 202
+        //         });
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         return this.GetResponse(new BaseResponse()
+        //         {
+        //             Message = ex.Message,
+        //             Success = false,
+        //             ResponseCode = (int)HttpStatusCode.InternalServerError
+        //         });
+        //     }
+        // }
     }
 }

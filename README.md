@@ -23,9 +23,9 @@ The REST API is expected to do the following:
 
 1. Retrieve a person by name.       [ x ]
 2. Retrieve all people.             [ x ]
-3. Add/update a person by name.     [   ] adding a person only adds the name
-4. Retrieve Astronaut Duty by name. [   ] GET /AstronautDuty{name} exists but uses GetPersonByName
-5. Add an Astronaut Duty.           [ x ] POST /AstronautDuty
+3. Add/update a person by name.     [ x ] 
+4. Retrieve Astronaut Duty by name. [ x ]
+5. Add an Astronaut Duty.           [ x ] 
 
 ##### Implement a user interface: (Encouraged)
 
@@ -61,3 +61,60 @@ Examine the code, find and resolve any flaws, if any exist. Identify design patt
 1. A Person's Previous Duty End Date is set to the day before the New Astronaut Duty Start Date when a new Astronaut Duty is received for a Person.
 1. A Person is classified as 'Retired' when a Duty Title is 'RETIRED'.
 1. A Person's Career End Date is one day before the Retired Duty Start Date.
+
+## Implementation
+
+Person:
+- id
+- Name (must be unique)
+- AstronautDetail
+- AstronautDuties
+
+AstronautDetail
+- id
+- personID
+- CurrentRank
+- CurrentDutyTitle
+- Career Start Date
+- Career End Date
+- Person
+
+AstronautDuty
+- id
+- personID
+- Rank
+- DutyTitle
+- DutyStartDate
+- DutyEndDate
+- Person
+
+Backend
+- when you create a person, it attaches a name only, verifies name is unique
+- adding a duty of spaceman by name creates an astronautdetail (enrolling them in astronaut program) and set their start date
+- adding a new duty will update relevant details in the astronautdetail, handle dates in the astronautduty
+- adding a duty of "retired" will add a career end date 1 day before the retired duty start date
+- deleting a person will cascade to include deleting astronautdetails or astronaut duties if they apply (TODO)
+
+Frontend
+- 2 page app with title bar
+- first page shows all current employee names, can add a new employee
+   - delete button - if astronaut will also delete detail and all duties
+- second page shows astronauts and their duties, option to "add astronaut"
+   - grabs all employees without an astronaut detail, you select
+   - assigns duty of spaceman
+- each astronaut has button to add duty
+   - add duty menu allows you to enter duty information or select retire
+
+Logging
+- log to stdout successes and exceptions
+
+Defensive coding
+- SQL injection protection in preprocessors?
+
+Add Unit Tests, most critical:
+- update duty route
+- create person route
+
+write a build script that runs all unit tests then calls the docker compose 
+
+add an nginx container to the docker compose
