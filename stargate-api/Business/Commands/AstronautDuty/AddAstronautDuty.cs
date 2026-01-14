@@ -59,18 +59,14 @@ namespace StargateAPI.Business.Commands
         }
         public async Task<AddAstronautDutyResult> Handle(AddAstronautDuty request, CancellationToken cancellationToken)
         {
-            // Check if this is the first duty for this person
             var hasExistingDuties = await _context.AstronautDuties
                 .AnyAsync(z => z.PersonId == request.PersonId, cancellationToken);
 
-            // Validate that the first duty must be "Spaceman"
             if (!hasExistingDuties && !request.DutyTitle.Equals("Spaceman", StringComparison.OrdinalIgnoreCase))
             {
                 throw new BadHttpRequestException("To enroll in the astronaut program, the first duty title must be 'Spaceman'");
             }
 
-            // Rule 5: A Person's Previous Duty End Date is set to the day before the New Astronaut Duty Start Date
-            // Find the current duty (where DutyEndDate is null) for this person
             var currentDuty = await _context.AstronautDuties
                 .FirstOrDefaultAsync(z => z.PersonId == request.PersonId && z.DutyEndDate == null, cancellationToken);
 
@@ -81,8 +77,6 @@ namespace StargateAPI.Business.Commands
                 _context.AstronautDuties.Update(currentDuty);
             }
 
-            // Rule 3 & 4: A Person will only ever hold one current Astronaut Duty at a time
-            // A Person's Current Duty will not have a Duty End Date
             var newAstronautDuty = new AstronautDuty()
             {
                 PersonId = request.PersonId,
@@ -94,18 +88,13 @@ namespace StargateAPI.Business.Commands
 
             await _context.AstronautDuties.AddAsync(newAstronautDuty);
 
-            // Get or create AstronautDetail for this person
             var astronautDetail = await _context.AstronautDetails
                 .FirstOrDefaultAsync(z => z.PersonId == request.PersonId, cancellationToken);
 
             if (astronautDetail == null)
             {
-                // Rule 2: A Person who has not had an astronaut assignment will not have Astronaut records
-                // After creating the first duty (Spaceman), we need to create the AstronautDetail
                 var careerEndDate = (DateTime?)null;
                 
-                // Rule 6 & 7: A Person is classified as 'Retired' when a Duty Title is 'RETIRED'
-                // A Person's Career End Date is one day before the Retired Duty Start Date
                 if (request.DutyTitle.Equals("RETIRED", StringComparison.OrdinalIgnoreCase))
                 {
                     careerEndDate = request.DutyStartDate.AddDays(-1).Date;
@@ -123,12 +112,9 @@ namespace StargateAPI.Business.Commands
             }
             else
             {
-                // Update the current rank and duty title
                 astronautDetail.CurrentRank = request.Rank;
                 astronautDetail.CurrentDutyTitle = request.DutyTitle;
 
-                // Rule 6 & 7: A Person is classified as 'Retired' when a Duty Title is 'RETIRED'
-                // A Person's Career End Date is one day before the Retired Duty Start Date
                 if (request.DutyTitle.Equals("RETIRED", StringComparison.OrdinalIgnoreCase))
                 {
                     astronautDetail.CareerEndDate = request.DutyStartDate.AddDays(-1).Date;
