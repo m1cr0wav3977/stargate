@@ -21,7 +21,6 @@ namespace StargateAPI.Business.Commands
 
         public async Task<DeletePersonResult> Handle(DeletePerson request, CancellationToken cancellationToken)
         {
-            // Load person with related entities for cascade delete
             var person = await _context.People
                 .Include(p => p.AstronautDetail)
                 .Include(p => p.AstronautDuties)
@@ -29,7 +28,6 @@ namespace StargateAPI.Business.Commands
 
             if (person is null) throw new BadHttpRequestException("Bad Request");
 
-            // EF Core will handle cascade delete if configured, otherwise remove related entities explicitly
             if (person.AstronautDetail != null)
             {
                 _context.AstronautDetails.Remove(person.AstronautDetail);
@@ -40,7 +38,6 @@ namespace StargateAPI.Business.Commands
                 _context.AstronautDuties.RemoveRange(person.AstronautDuties);
             }
 
-            // Remove the person (cascade delete should handle related entities if configured)
             _context.People.Remove(person);
 
             await _context.SaveChangesAsync(cancellationToken);

@@ -72,7 +72,6 @@ namespace StargateAPI.Business.Commands
 
             if (currentDuty != null)
             {
-                // Set the previous duty's end date to one day before the new duty's start date
                 currentDuty.DutyEndDate = request.DutyStartDate.AddDays(-1).Date;
                 _context.AstronautDuties.Update(currentDuty);
             }
@@ -83,7 +82,7 @@ namespace StargateAPI.Business.Commands
                 Rank = request.Rank,
                 DutyTitle = request.DutyTitle,
                 DutyStartDate = request.DutyStartDate.Date,
-                DutyEndDate = null  // Current duty has no end date
+                DutyEndDate = null
             };
 
             await _context.AstronautDuties.AddAsync(newAstronautDuty);
